@@ -1,6 +1,8 @@
 %option noyywrap
 %{
     #include <stdio.h>
+    #include "parser.tab.h"
+    /*
     enum yytokentype
     {
         // some key-words in mylang
@@ -43,11 +45,11 @@
         INPUTCHAR      = 0x2A,
         IDENTIFIER     = 0x2B
     };
-    
+    */
     // some declaration about lex
     FILE* yyout;
     FILE* yyin;
-    char yylval;
+
 %}
 
 CHAR        "char"
@@ -115,17 +117,18 @@ COMMENT     "//".*
 {IF}            {printf("IF\n");        return IF;}
 
 {INPUTCHAR}     {printf("INPUTCHAR, value:%s\n",yytext); return CHAR;}
-{DEC_DIGIT}     {printf("DEC_DIGIT, value:%s\n",yytext); return DEC_DIGIT;}
-{HEX_DIGIT}     {printf("HEX_DIGIT, value:%s\n",yytext); return HEX_DIGIT;}
+{DEC_DIGIT}     {printf("DEC_DIGIT, value:%s\n",yytext); yylval = atoi(yytext); return DEC_DIGIT;}
+{HEX_DIGIT}     {printf("HEX_DIGIT, value:%s\n",yytext); yylval = atoi(yytext); return HEX_DIGIT;}
 {IDENTIFIER}    {printf("IDENTIFIER, value:%s\n",yytext); return IDENTIFIER;}
 
-{SPACE}*        {printf(" ");}      //ignore space
-{NEWLINE}*      {printf("\n");}     //ignore newline
+{SPACE}*        //{printf(" ");}      //ignore space
 {COMMENT}*      {printf("COMMENT\n");}
+{NEWLINE}*      //{printf("\n");}     //ignore newline
+
 
 .               {printf("unknown Token %s\n",yytext);return -1;}
 %%
-
+/*
 int main(int argc, char* argv[]){
     int token_type;
     yyin = fopen(argv[1],"r");
@@ -134,3 +137,4 @@ int main(int argc, char* argv[]){
 
     }
 }
+*/

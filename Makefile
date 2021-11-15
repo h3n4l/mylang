@@ -1,7 +1,12 @@
-
-parser: lexical.l
+parser: parser.y lexical.l
+	bison -d parser.y
+	flex lexical.l
+	gcc -std=c99  parser.tab.c lex.yy.c -o parser
+lexical: lexical.l
 	flex lexical.l
 	gcc -g lex.yy.c -o lexical
+
+
 
 .PHONY test_parser:
 
@@ -12,5 +17,4 @@ test_parser:
 .PHONY clean:
 
 clean:
-	rm lex.yy.c lexical
-	rm -r lexical.dSYM
+	rm -r lexical.dSYM lex.yy.c parser.tab.c parser.tab.h lexical parser
