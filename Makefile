@@ -1,14 +1,16 @@
 
-parser: parser.l
-	flex parser.l
-	gcc -g lex.yy.c -o parser
+parser: lexical.l
+	flex lexical.l
+	gcc -g lex.yy.c -o lexical
 
 .PHONY test_parser:
+
 test_parser:
-	flex parser.l
-	gcc -g lex.yy.c -o parser
-	./parser Test/test.lang
+	flex lexical.l
+	gcc -g lex.yy.c -o lexical
+	./lexical Test/test.lang
 .PHONY clean:
 
 clean:
-	rm lex.yy.c parser
+	rm lex.yy.c lexical
+	rm -r lexical.dSYM
