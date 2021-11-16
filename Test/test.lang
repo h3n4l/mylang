@@ -1,14 +1,8 @@
-function main(){
-    // test type;
-    int a = 1;
-    uint b = 2;
-    // test operations
-    int c = a + b;
-    int d = a - b;
-    int e = a * b;
-    int f = a / b;
-    int g = a & b;
-    int h = a | b;
-    // test tags
-    int i = ((a+b)-b)+b;
-}
+int a = 1;      //  define a = 1;
+int b = 2;      //  define b = 2;
+a;              //  output a, expected 1;
+b;              //  output b, expected 2;
+b = a;          //  set b = a;
+b;              //  output b, expected 1;
+a = iInput();   //  save input value in a;
+a;              //  output a;

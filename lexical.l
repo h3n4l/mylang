@@ -3,7 +3,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include "parser.tab.h"
-
+    #define LEXLOG 0
     /*
     enum yytokentype
     {
@@ -48,7 +48,7 @@
         IDENTIFIER     = 0x2B
     };
     */
-
+    void lexlog(char*s);
     // some declaration about lex
     FILE* yyout;
     FILE* yyin;
@@ -93,48 +93,52 @@ NEWLINE     \n
 IDENTIFIER  [a-zA-Z][0-9a-zA-Z]*
 COMMENT     "//".*
 
-%%
-{CHAR}          {printf("CHAR\n");      return CHAR;}
-{INT}           {printf("INT\n");       return INT;}
-{UINT}          {printf("UINT\n");      return UINT;}
-{DOUBLE}        {printf("DOUBLE\n");    return DOUBLE;}
-{FUNCTION}      {printf("FUNCTION\n");   return FUNCTION;}
-{CALL}          {printf("CALL\n");      return CALL;}
-{RETURN}        {printf("RETURN\n");    return RETURN;}
-{SEMIC}         {printf("SEMIC\n");     return SEMIC;}
-{OPEN_PAREN}    {printf("OPENPAREN\n"); return OPEN_PAREN;}
-{CLOSE_PAREN}   {printf("CLOSEPAREN\n");return CLOSE_PAREN;}
-{OPEN_BRACE}    {printf("OPENBRACE\n"); return OPEN_BRACE;}
-{CLOSE_BRACE}   {printf("OPENBRACE\n"); return CLOSE_BRACE;}
-{ALOG_EQUAL}    {printf("LOGI_EQUAL\n");return ALOG_EQUAL;}
-{ALOG_ADD}      {printf("ALOG_ADD\n");  return ALOG_ADD;}
-{ALOG_SUB}      {printf("ALOG_SUB\n");  return ALOG_SUB;}
-{ALOG_MUL}      {printf("ALOG_MUL\n");  return ALOG_MUL;}
-{ALOG_DIV}      {printf("ALOG_DIV\n");  return ALOG_DIV;}
-{ALOG_AND}      {printf("ALOG_AND\n");  return ALOG_AND;}
-{ALOG_OR}       {printf("ALOG_OR\n");   return ALOG_OR;}
-{LOGI_AND}      {printf("LOGI_AND\n");  return LOGI_AND;}
-{LOGI_OR}       {printf("LOGI_OR\n");   return LOGI_OR;}
-{LOGI_NOT}      {printf("LOGI_NOT\n");  return LOGI_NOT;}
-{FOR}           {printf("FOR\n");       return FOR;}
-{IF}            {printf("IF\n");        return IF;}
+IINPUT_FUNC "iInput()"
 
-{INPUTCHAR}     {printf("INPUTCHAR, value:%s\n",yytext); yylval.cValue = *yytext; return CHAR;}
+%%
+{CHAR}          {lexlog("CHAR\n");      return CHAR;}
+{INT}           {lexlog("INT\n");       return INT;}
+{UINT}          {lexlog("UINT\n");      return UINT;}
+{DOUBLE}        {lexlog("DOUBLE\n");    return DOUBLE;}
+{FUNCTION}      {lexlog("FUNCTION\n");   return FUNCTION;}
+{CALL}          {lexlog("CALL\n");      return CALL;}
+{RETURN}        {lexlog("RETURN\n");    return RETURN;}
+{SEMIC}         {lexlog("SEMIC\n");     return SEMIC;}
+{OPEN_PAREN}    {lexlog("OPENPAREN\n"); return OPEN_PAREN;}
+{CLOSE_PAREN}   {lexlog("CLOSEPAREN\n");return CLOSE_PAREN;}
+{OPEN_BRACE}    {lexlog("OPENBRACE\n"); return OPEN_BRACE;}
+{CLOSE_BRACE}   {lexlog("OPENBRACE\n"); return CLOSE_BRACE;}
+{ALOG_EQUAL}    {lexlog("ALOG_EQUAL\n");return ALOG_EQUAL;}
+{ALOG_ADD}      {lexlog("ALOG_ADD\n");  return ALOG_ADD;}
+{ALOG_SUB}      {lexlog("ALOG_SUB\n");  return ALOG_SUB;}
+{ALOG_MUL}      {lexlog("ALOG_MUL\n");  return ALOG_MUL;}
+{ALOG_DIV}      {lexlog("ALOG_DIV\n");  return ALOG_DIV;}
+{ALOG_AND}      {lexlog("ALOG_AND\n");  return ALOG_AND;}
+{ALOG_OR}       {lexlog("ALOG_OR\n");   return ALOG_OR;}
+{LOGI_AND}      {lexlog("LOGI_AND\n");  return LOGI_AND;}
+{LOGI_OR}       {lexlog("LOGI_OR\n");   return LOGI_OR;}
+{LOGI_NOT}      {lexlog("LOGI_NOT\n");  return LOGI_NOT;}
+{FOR}           {lexlog("FOR\n");       return FOR;}
+{IF}            {lexlog("IF\n");        return IF;}
+
+{INPUTCHAR}     {lexlog("INPUTCHAR"); yylval.cValue = *yytext; return CHAR;}
 {DEC_DIGIT}     {
-    printf("DEC_DIGIT, value:%s\n",yytext);
+    lexlog("DEC_DIGIT");
     yylval.iValue = strtol(yytext,NULL,10);
     return DEC_DIGIT;
 }
-{DECIMAL}       {printf("DECIMAL, value:%s\n",yytext); yylval.dValue = atof(yytext); return DECIMAL;}
-{HEX_DIGIT}     {printf("HEX_DIGIT, value:%s\n",yytext); yylval.iValue = strtol(yytext,NULL,16); return HEX_DIGIT;}
-{IDENTIFIER}    {printf("IDENTIFIER, value:%s\n",yytext); yylval.name = strdup(yytext); return IDENTIFIER;}
+{DECIMAL}       {lexlog("DECIMAL"); yylval.dValue = atof(yytext); return DECIMAL;}
+{HEX_DIGIT}     {lexlog("HEX_DIGIT"); yylval.iValue = strtol(yytext,NULL,16); return HEX_DIGIT;}
+{IINPUT_FUNC}   {lexlog("IINPUT_FUNC");return IINPUT_FUNC;}
 
-{SPACE}*        //{printf(" ");}      //ignore space
-{COMMENT}*      {printf("COMMENT\n");}
-{NEWLINE}*      //{printf("\n");}     //ignore newline
+{IDENTIFIER}    {lexlog("IDENTIFIER"); yylval.name = strdup(yytext); return IDENTIFIER;}
+
+{SPACE}*        //{lexlog(" ");}      //ignore space
+{COMMENT}*      {lexlog("COMMENT\n");}
+{NEWLINE}*      //{lexlog("\n");}     //ignore newline
 
 
-.               {printf("unknown Token %s\n",yytext);return -1;}
+.               {printf("\033[0mUnknown Token %s\033[0m\n",yytext);return -1;}
 %%
 
 
@@ -147,4 +151,16 @@ int main(int argc, char* argv[]){
 
     }
 }
+#define mian main
+#define ；  ;
 */
+
+void lexlog(char*s){
+    #ifndef LEXDEBUG
+    #define LEXDEBUG 0
+    #endif
+    if(LEXDEBUG){
+        printf("\033[034m%s\033[0m\n",s);
+    }
+    
+}

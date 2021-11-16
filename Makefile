@@ -1,5 +1,5 @@
 parser: parser.y lexical.l
-	bison -d parser.y
+	bison --report=all -d parser.y
 	flex lexical.l
 	gcc -std=c99  parser.tab.c lex.yy.c -o parser
 lexical: lexical.l
