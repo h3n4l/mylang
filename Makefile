@@ -14,7 +14,8 @@ test_parser:
 	flex lexical.l
 	gcc -g lex.yy.c -o lexical
 	./lexical Test/test.lang
+
 .PHONY clean:
 
 clean:
-	rm -r lexical.dSYM lex.yy.c parser.tab.c parser.tab.h lexical parser
+	rm -r lexical.dSYM lex.yy.c parser.tab.c parser.tab.h lexical parser parser.output
